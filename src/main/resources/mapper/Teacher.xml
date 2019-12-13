@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是用于方法调用的映射,而不是实体类和表的映射,配置文件中设置的别名,和这个User没有关系 -->
+<!-- 调用下面的标签 需要使用 namespace.id 来执行 -->
+<mapper namespace="Teacher">
+
+    <select id="selectid" resultType="int" parameterType="String">
+        select id from  teacher where teacher.name = #{teacher_name}
+    </select>
+
+    <select id="selectids" resultType="Teacher" parameterType="String">
+        select * from  teacher where class_id = #{class_id}
+    </select>
+
+    <select id="selectAll" resultMap="teacherMap">
+        SELECT
+	    * ,c.id AS c_id,
+	    c.`name` AS c_name,
+        d.id as d_id,
+	    d.`name` as d_name
+        FROM
+	    teacher AS t
+        LEFT JOIN class AS c ON t.class_id = c.id
+        LEFT JOIN department as d on t.department_id = d.id
+        <where>
+            <if test="name != null and name !=''">
+                and t.name like CONCAT('%',#{name},'%')
+            </if>
+        </where>
+        LIMIT #{pageOffset},#{pageSize}
+    </select>
+
+    <delete id="deleteone" parameterType="int">
+        delete from teacher where id = #{id}
+    </delete>
+
+    <update id="updateone" parameterType="Teacher">
+        update teacher set name = #{name},phone = #{phone},email = #{email},salary = #{salary},class_id = #{class_id},department_id = #{department_id} where id = #{id}
+    </update>
+
+    <insert id="addone" parameterType="Teacher">
+        insert into teacher (name, phone, email, salary, class_id, department_id) values (#{name},#{phone},#{email},#{salary},#{class_id},#{department_id})
+    </insert>
+
+
+    <resultMap id="teacherMap" type="Teacher" autoMapping="true">
+        <id column="id" property="id"/>
+        <association property="aClass" javaType="Class" autoMapping="true">
+            <id column="c_id" property="id"/>
+            <result column="c_name" property="name"/>
+        </association>
+
+        <association property="department" javaType="Department" autoMapping="true">
+            <id column="d_id" property="id"/>
+            <result column="d_name" property="name"/>
+        </association>
+    </resultMap>
+
+
+
+
+
+
+    <select id="selectCountname" resultType="int" parameterType="map">
+        select count(*) from  teacher
+        where name like CONCAT('%',#{name},'%')
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from  teacher
+    </select>
+
+
+</mapper>

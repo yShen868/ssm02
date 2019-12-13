@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+    </settings>
+    <typeAliases>
+        <!-- 对包下面所有类自动设置别名,别名就是类名(首字母大小写都可以) -->
+        <package name="com.yShen.study.model" />
+    </typeAliases>
+    <!--<setting name="logImpl" value="LOG4J"/>-->
+    <!-- 映射文件 -->
+    <mappers>
+        <mapper resource="mapper/Student.xml" />
+        <mapper resource="mapper/Admin.xml" />
+        <mapper resource="mapper/Department.xml" />
+        <mapper resource="mapper/Class.xml" />
+        <mapper resource="mapper/Teacher.xml" />
+    </mappers>
+</configuration>

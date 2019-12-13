@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Student">
+
+    <select id="selectAll" parameterType="map" resultMap="StudentMap">
+        select *,c2.id as c2_id ,c2.name as c2_name,t.id as t_id ,t.name as t_name ,t.class_id as t_class_id
+        from student as st left join class c2 on st.class_id = c2.id left join teacher t on st.teacher_id = t.id
+        limit #{pageOffset},#{pageSize}
+    </select>
+
+
+    <select id="selectByName" parameterType="map" resultMap="StudentMap">
+        select *,c2.id as c2_id ,c2.name as c2_name,t.id as t_id ,t.name as t_name ,t.class_id as t_class_id
+        from student as st left join class c2 on st.class_id = c2.id left join teacher t on st.teacher_id = t.id
+        where
+        s_name = #{s_name}
+        limit #{pageOffset},#{pageSize}
+    </select>
+
+
+    <select id="countstuByName" resultType="int" parameterType="String">
+        select count(*) from student where s_name = #{s_name}
+    </select>
+
+
+    <!--根据老师id查询学生正在使用老师id （外键） -->
+    <select id="count_teacher" resultType="int" parameterType="int">
+         select count(*) from student where teacher_id = #{id}
+    </select>
+
+
+
+    <resultMap id="StudentMap" type="Student" autoMapping="true">
+        <id column="s_id" property="s_id"/>
+        <association property="aClass" javaType="Class" autoMapping="true">
+            <id column="c2_id" property="id"/>
+            <result column="c2_name" property="name"/>
+        </association>
+
+
+        <association property="teacher" javaType="Teacher" autoMapping="true">
+            <id column="t_id" property="id"/>
+            <result column="t_name" property="name"/>
+            <result column="t_class_id" property="class_id"/>
+        </association>
+    </resultMap>
+
+
+    <!--parameterType="HashMap"-->
+
+    <select id="selectstu" resultType="Student">
+        select * from student
+    </select>
+    <select id="countstu" resultType="int">
+        select count(*) from student
+    </select>
+
+
+    <delete id="deletestu" parameterType="int">
+        DELETE FROM student where s_id = #{id}
+    </delete>
+
+
+    <insert id="insertstu" parameterType="Student">
+        INSERT INTO student (
+                s_name,
+                grade,
+                sex,
+                class_id,
+                teacher_id)
+            VALUES
+                (
+                    #{s_name},
+                    #{grade},
+                    #{sex},
+                    #{class_id},
+                    #{teacher_id}
+                )
+    </insert>
+
+    <update id="updatestu" parameterType="Student">
+
+        update student set s_name = #{s_name}, grade = #{grade}, teacher_id = #{teacher_id}, class_id = #{class_id},sex =#{sex} where s_id = #{s_id}
+    </update>
+    <update id="updatename" parameterType="map">
+
+        update student set s_name = #{s_name} where s_id = #{s_id}
+    </update>
+
+</mapper>
